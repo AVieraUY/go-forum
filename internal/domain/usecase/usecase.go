@@ -3,6 +3,8 @@ package usecase
 import (
 	"strings"
 
+	"github.com/AVieraUY/go-forum/internal/security/password"
+
 	validators "github.com/AVieraUY/go-validators/email"
 
 	"github.com/AVieraUY/go-forum/internal/domain"
@@ -18,6 +20,7 @@ type usecase struct {
 }
 
 const (
+	REGISTER        = "register"
 	LOGIN           = "login"
 	UPDATE          = "update"
 	FORGOT_PASSWORD = "forgot_password"
@@ -30,11 +33,44 @@ func NewUseCase(u user.Manager, p post.Manager, c comment.Manager) *usecase {
 
 // Register an user
 func (s *usecase) Register(u *user.User) error {
+	err := validateUser(u, REGISTER)
+	if err != nil {
+		return err
+	}
+
+	usrs, err := s.uManager.Search(u.Username)
+	if err != nil {
+		return err
+	}
+	if len(usrs) >= 1 {
+		return domain.ErrDuplicatedUsername
+	}
+
+	_, err = s.uManager.Create(u)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// Login an user
+// Return an access token
 func (s *usecase) Login(u *user.User) error {
+	err := validateUser(u, LOGIN)
+	if err != nil {
+		return err
+	}
+
+	usr, err := s.uManager.Get(u.ID)
+	if err != nil {
+		return err
+	}
+
+	err = password.NewService().Verify(usr.Password, u.Password)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -45,35 +81,58 @@ func (s *usecase) ForgotPassword(u *user.User) error {
 
 // UpdateDetails update details of an user
 func (s *usecase) UpdateDetails(u *user.User) error {
+	err := validateUser(u, UPDATE)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.uManager.Get(u.ID)
+	if err != nil {
+		return err
+	}
+
+	err = s.uManager.Update(u)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func validateUser(u *user.User, action string) map[string]string {
-	var errorMessages = make(map[string]string)
-
+func validateUser(u *user.User, action string) error {
+	var err error
 	switch strings.ToLower(action) {
 	case LOGIN:
 		if u.Username == "" {
-			errorMessages["invalid_username"] = domain.ErrInvalidUsername.Error()
+			err = domain.ErrInvalidUsername
+			return err
 		}
 		if u.Password == "" || (u.Password != "" && len(u.Password) < 6) {
-			errorMessages["invalid_password"] = domain.ErrInvalidPassword.Error()
+			err = domain.ErrInvalidPassword
+			return err
 		}
 	case UPDATE, FORGOT_PASSWORD:
 		if u.Email == "" || !validators.IsValid(u.Email) {
-			errorMessages["invalid_email"] = domain.ErrInvalidEmail.Error()
+			err = domain.ErrInvalidEmail
+			return err
 		}
-	default:
+	case REGISTER:
 		if u.Username == "" {
-			errorMessages["invalid_username"] = domain.ErrInvalidUsername.Error()
+			err = domain.ErrInvalidUsername
+			return err
 		}
 		if u.Password == "" || (u.Password != "" && len(u.Password) < 6) {
-			errorMessages["invalid_password"] = domain.ErrInvalidPassword.Error()
+			err = domain.ErrInvalidPassword
+			return err
 		}
 		if u.Email == "" || !validators.IsValid(u.Email) {
-			errorMessages["invalid_email"] = domain.ErrInvalidEmail.Error()
+			err = domain.ErrInvalidEmail
+			return err
 		}
 	}
 
-	return errorMessages
+	if err != nil {
+		return err
+	}
+	return nil
 }

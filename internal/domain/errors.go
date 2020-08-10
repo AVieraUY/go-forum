@@ -13,6 +13,9 @@ var ErrCannotBeDeleted = errors.New("Cannot be deleted")
 // ErrInvalidUsername invalid username
 var ErrInvalidUsername = errors.New("Invalid username")
 
+// ErrDuplicatedUsername duplicated username
+var ErrDuplicatedUsername = errors.New("Username already exist")
+
 // ErrInvalidEmail invalid email
 var ErrInvalidEmail = errors.New("Invalid email")
 

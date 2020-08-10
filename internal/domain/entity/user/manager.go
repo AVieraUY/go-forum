@@ -4,6 +4,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AVieraUY/go-forum/internal/security/password"
+
 	"github.com/AVieraUY/go-forum/internal/domain/entity"
 )
 
@@ -35,6 +37,11 @@ func (s *manager) List() ([]*User, error) {
 func (s *manager) Create(e *User) (entity.ID, error) {
 	e.ID = entity.NewID()
 	e.CreatedAt = time.Now()
+	pHashed, err := password.NewService().Hash(e.Password)
+	if err != nil {
+		return e.ID, err
+	}
+	e.Password = string(pHashed)
 	return s.repo.Create(e)
 }
 
