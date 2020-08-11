@@ -20,14 +20,9 @@ func (s *manager) Get(id entity.ID) (*Like, error) {
 	return s.repo.Get(id)
 }
 
-// Search likes
-func (s *manager) Search(query string) (*[]Like, error) {
-	return s.repo.Search(query)
-}
-
-// List likes
-func (s *manager) List() (*[]Like, error) {
-	return s.repo.List()
+// Get likes from a post
+func (s *manager) GetByPostID(id entity.ID) ([]*Like, error) {
+	return s.repo.GetByPostID(id)
 }
 
 // Creates a new like
@@ -35,12 +30,6 @@ func (s *manager) Create(e *Like) (entity.ID, error) {
 	e.ID = entity.NewID()
 	e.CreatedAt = time.Now()
 	return s.repo.Create(e)
-}
-
-// Update an existing like
-func (s *manager) Update(e *Like) error {
-	e.UpdatedAt = time.Now()
-	return s.repo.Update(e)
 }
 
 // Delete an existing like
@@ -51,4 +40,14 @@ func (s *manager) Delete(id entity.ID) error {
 	}
 
 	return s.repo.Delete(id)
+}
+
+// DeletePostLikes deletes all likes from a post
+func (s *manager) DeletePostLikes(id entity.ID) error {
+	return s.repo.DeletePostLikes(id)
+}
+
+// DeleteUserLikes deletes all likes from a user
+func (s *manager) DeleteUserLikes(id entity.ID) error {
+	return s.repo.DeleteUserLikes(id)
 }
