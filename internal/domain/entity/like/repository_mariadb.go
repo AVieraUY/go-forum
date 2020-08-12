@@ -25,7 +25,7 @@ func (s *MariaDBRepo) Get(id entity.ID) (*Like, error) {
 
 	var l Like
 	for rows.Next() {
-		err = rows.Scan(&l.ID, &l.UserID, &l.PostID, &l.CreatedAt, &l.UpdatedAt)
+		err = rows.Scan(&l.ID, &l.UserID, &l.PostID, &l.CreatedAt)
 	}
 
 	if err != nil {
@@ -45,7 +45,7 @@ func (s *MariaDBRepo) GetByPostID(id entity.ID) ([]*Like, error) {
 	var likes []*Like
 	for rows.Next() {
 		var l Like
-		err = rows.Scan(&l.ID, &l.UserID, &l.PostID, &l.CreatedAt, &l.UpdatedAt)
+		err = rows.Scan(&l.ID, &l.UserID, &l.PostID, &l.CreatedAt)
 		likes = append(likes, &l)
 	}
 
@@ -58,20 +58,40 @@ func (s *MariaDBRepo) GetByPostID(id entity.ID) ([]*Like, error) {
 
 // Create a new like
 func (s *MariaDBRepo) Create(e *Like) (entity.ID, error) {
+	_, err := s.db.Exec("insert into like (id, user_id, post_id, created_at, updated_at) values (?,?,?,?,?)", e.ID, e.UserID, e.PostID, e.CreatedAt)
+	if err != nil {
+		return e.ID, err
+	}
+
 	return e.ID, nil
 }
 
 // Delete like
 func (s *MariaDBRepo) Delete(id entity.ID) error {
+	_, err := s.db.Exec("delete from like where id = ?", id)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // DeletePostLikes deletes all likes from a post
 func (s *MariaDBRepo) DeletePostLikes(id entity.ID) error {
+	_, err := s.db.Exec("delete from like where post_id = ?", id)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // DeleteUserLikes deletes all likes from a user
 func (s *MariaDBRepo) DeleteUserLikes(id entity.ID) error {
-	return nil
+	_, err := s.db.Exec("delete from like where user_id = ?", id)
+	if err != nil {
+		return err
+	}
+
+	return err
 }

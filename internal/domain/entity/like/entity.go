@@ -12,5 +12,4 @@ type Like struct {
 	UserID    entity.ID
 	PostID    entity.ID
 	CreatedAt time.Time
-	UpdatedAt time.Time
 }
