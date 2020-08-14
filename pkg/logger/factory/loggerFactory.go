@@ -2,10 +2,18 @@ package factory
 
 import (
 	"github.com/AVieraUY/go-forum/config"
-	"github.com/AVieraUY/go-forum/pkg/logger"
 )
 
 // LoggerFactory logger factory
 type LoggerFactory interface {
-	Build(c *config.LoggerConfig) (logger.Logger, error)
+	Build(c *config.LoggerConfig) error
+}
+
+var loggerFactoryBuilderMap = map[string]LoggerFactory{
+	config.Zap: &ZapFactory{},
+}
+
+// GetLoggerFactoryBuilder of concret implementation
+func GetLoggerFactoryBuilder(key string) LoggerFactory {
+	return loggerFactoryBuilderMap[key]
 }
