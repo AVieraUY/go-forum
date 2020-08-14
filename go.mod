@@ -14,10 +14,12 @@ require (
 	github.com/jinzhu/gorm v1.9.15 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/matcornic/hermes/v2 v2.1.0 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/sendgrid/rest v2.6.0+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.6.0+incompatible // indirect
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/twinj/uuid v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )

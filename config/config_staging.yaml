@@ -1,0 +1,17 @@
+dbConfig: &dbConfig
+	dbName: forum_db
+	dbUser: admin
+	dbPassword: admin
+	dbHost: 127.0.0.1
+	dbPort: 3306
+
+apiConfig: &apiConfig
+	apiPort: 8080
+	apiSecret: 98hbun98h
+
+loggerConfig: *zapConfig
+
+zapConfig: &zapConfig
+    libName: zap
+    level: debug
+    enableCaller: true
