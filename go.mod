@@ -11,6 +11,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607 // indirect
 	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/golang/mock v1.4.4 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/jinzhu/gorm v1.9.15 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
@@ -22,6 +23,8 @@ require (
 	github.com/twinj/uuid v1.0.0 // indirect
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
+	golang.org/x/tools v0.0.0-20200819193742-d088b475e336 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )
