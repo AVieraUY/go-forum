@@ -6,8 +6,6 @@ import (
 	"github.com/AVieraUY/go-forum/internal/domain"
 
 	"github.com/AVieraUY/go-forum/internal/domain/entity"
-	"github.com/AVieraUY/go-forum/internal/domain/entity/post"
-	"github.com/AVieraUY/go-forum/internal/domain/entity/user"
 )
 
 // MariaDBRepo mariadb repository
@@ -28,12 +26,8 @@ func (r *MariaDBRepo) Get(id entity.ID) (*Comment, error) {
 	}
 
 	var c Comment
-	var userID entity.ID
-	var postID entity.ID
 	for rows.Next() {
-		err = rows.Scan(&c.ID, &userID, &postID, &c.Body, &c.CreatedAt, &c.UpdatedAt)
-		c.User = user.User{ID: userID}
-		c.Post = post.Post{ID: postID}
+		err = rows.Scan(&c.ID, &c.UserID, &c.PostID, &c.Body, &c.CreatedAt, &c.UpdatedAt)
 	}
 
 	if err != nil {
@@ -83,7 +77,7 @@ func (r *MariaDBRepo) List() ([]*Comment, error) {
 
 // Create a new comment
 func (r *MariaDBRepo) Create(e *Comment) (entity.ID, error) {
-	_, err := r.db.Exec("insert into comment (id, user_id, post_id, body, created_at, updated_at) values (?,?,?,?,?,?)", e.ID, e.User.ID, e.Post.ID, e.Body, e.CreatedAt, e.UpdatedAt)
+	_, err := r.db.Exec("insert into comment (id, user_id, post_id, body, created_at, updated_at) values (?,?,?,?,?,?)", e.ID, e.UserID, e.PostID, e.Body, e.CreatedAt, e.UpdatedAt)
 	if err != nil {
 		return e.ID, err
 	}
@@ -116,11 +110,7 @@ func fillComments(rows *sql.Rows) ([]*Comment, error) {
 	var err error
 	for rows.Next() {
 		var c Comment
-		var userID entity.ID
-		var postID entity.ID
-		err = rows.Scan(&c.ID, &userID, &postID, &c.Body, &c.CreatedAt, &c.UpdatedAt)
-		c.User = user.User{ID: userID}
-		c.Post = post.Post{ID: postID}
+		err = rows.Scan(&c.ID, &c.UserID, &c.PostID, &c.Body, &c.CreatedAt, &c.UpdatedAt)
 		comments = append(comments, &c)
 	}
 

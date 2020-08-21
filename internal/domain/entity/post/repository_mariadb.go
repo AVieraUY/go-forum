@@ -3,8 +3,6 @@ package post
 import (
 	"database/sql"
 
-	"github.com/AVieraUY/go-forum/internal/domain/entity/user"
-
 	"github.com/AVieraUY/go-forum/internal/domain"
 
 	"github.com/AVieraUY/go-forum/internal/domain/entity"
@@ -28,10 +26,8 @@ func (r *MariaDBRepo) Get(id entity.ID) (*Post, error) {
 	}
 
 	var p Post
-	var authorID entity.ID
 	for rows.Next() {
-		err = rows.Scan(&p.ID, &p.Title, &p.Content, &authorID, &p.CreatedAt, &p.UpdatedAt)
-		p.Author = user.User{ID: authorID}
+		err = rows.Scan(&p.ID, &p.Title, &p.Content, &p.UserID, &p.CreatedAt, &p.UpdatedAt)
 	}
 
 	if err != nil {
@@ -83,7 +79,7 @@ func (r *MariaDBRepo) List() ([]*Post, error) {
 
 // Create an post
 func (r *MariaDBRepo) Create(e *Post) (entity.ID, error) {
-	_, err := r.db.Exec("insert into post (id, title, content, author_id, created_at, updated_at) values (?,?,?,?,?,?)", e.ID, e.Title, e.Content, e.Author.ID, e.CreatedAt, e.UpdatedAt)
+	_, err := r.db.Exec("insert into post (id, title, content, user_id, created_at, updated_at) values (?,?,?,?,?,?)", e.ID, e.Title, e.Content, e.UserID, e.CreatedAt, e.UpdatedAt)
 	if err != nil {
 		return e.ID, err
 	}
@@ -93,7 +89,7 @@ func (r *MariaDBRepo) Create(e *Post) (entity.ID, error) {
 
 // Update an post
 func (r *MariaDBRepo) Update(e *Post) error {
-	_, err := r.db.Exec("update post set title = ?, content = ?, author_id = ?, updated_at = ? where id = ?", e.Title, e.Content, e.Author.ID, e.UpdatedAt, e.ID)
+	_, err := r.db.Exec("update post set title = ?, content = ?, user_id = ?, updated_at = ? where id = ?", e.Title, e.Content, e.UserID, e.UpdatedAt, e.ID)
 	if err != nil {
 		return err
 	}
@@ -115,9 +111,7 @@ func fillPosts(rows *sql.Rows) ([]*Post, error) {
 	var posts []*Post
 	for rows.Next() {
 		var p Post
-		var authorID entity.ID
-		err = rows.Scan(&p.ID, &p.Title, &p.Content, &authorID, &p.CreatedAt, &p.UpdatedAt)
-		p.Author = user.User{ID: authorID}
+		err = rows.Scan(&p.ID, &p.Title, &p.Content, &p.UserID, &p.CreatedAt, &p.UpdatedAt)
 		posts = append(posts, &p)
 	}
 

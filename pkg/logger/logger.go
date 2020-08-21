@@ -1,7 +1,9 @@
 package logger
 
+// Log logger
 var Log Logger
 
+// Logger logger interface
 type Logger interface {
 	Errorf(format string, args ...interface{})
 	Fatalf(format string, args ...interface{})
@@ -13,6 +15,7 @@ type Logger interface {
 	Debug(args ...interface{})
 }
 
+// SetLogger set logger
 func SetLogger(newLogger Logger) {
 	Log = newLogger
 }

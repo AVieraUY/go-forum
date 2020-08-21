@@ -19,11 +19,12 @@ type usecase struct {
 	cManager comment.Manager
 }
 
+// Constants of operations
 const (
-	REGISTER        = "register"
-	LOGIN           = "login"
-	UPDATE          = "update"
-	FORGOT_PASSWORD = "forgot_password"
+	REGISTER       = "register"
+	LOGIN          = "login"
+	UPDATE         = "update"
+	FORGOTPASSWORD = "forgot_password"
 )
 
 // NewUseCase create new use case
@@ -111,7 +112,7 @@ func validateUser(u *user.User, action string) error {
 			err = domain.ErrInvalidPassword
 			return err
 		}
-	case UPDATE, FORGOT_PASSWORD:
+	case UPDATE, FORGOTPASSWORD:
 		if u.Email == "" || !validators.IsValid(u.Email) {
 			err = domain.ErrInvalidEmail
 			return err

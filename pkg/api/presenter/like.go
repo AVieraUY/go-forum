@@ -6,12 +6,10 @@ import (
 	"github.com/AVieraUY/go-forum/internal/domain/entity"
 )
 
-// Comment data
-type Comment struct {
+// Like data
+type Like struct {
 	ID        entity.ID `json:"id"`
 	UserID    entity.ID `json:"userId"`
 	PostID    entity.ID `json:"postId"`
-	Body      string    `json:"body"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"createdAt"`
 }
