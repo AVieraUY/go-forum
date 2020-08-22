@@ -64,7 +64,40 @@ func getPost(manager post.Manager) http.HandlerFunc {
 
 func getPosts(manager post.Manager) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		errorMessage := "Error getting posts"
+		notFoundMessage := "Posts not found"
+		data, err := manager.List()
+		if err != nil {
+			logger.Log.Errorf("%s", err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(errorMessage))
+			return
+		}
 
+		if len(data) <= 0 || data == nil {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte(notFoundMessage))
+			return
+		}
+
+		var j []*presenter.Post
+		for _, d := range data {
+			j = append(j, &presenter.Post{
+				ID:        d.ID,
+				Title:     d.Title,
+				Content:   d.Content,
+				UserID:    d.UserID,
+				CreatedAt: d.CreatedAt,
+				UpdatedAt: d.UpdatedAt,
+			})
+		}
+
+		if err := json.NewEncoder(w).Encode(j); err != nil {
+			logger.Log.Errorf("%s", err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(errorMessage))
+			return
+		}
 	})
 }
 
