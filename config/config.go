@@ -23,10 +23,10 @@ const (
 
 // Config represents the entire application config
 type Config struct {
-	dbConfig     DBConfig     `yaml:"dbConfig"`
-	apiConfig    APIConfig    `yaml:"apiConfig"`
-	loggerConfig LoggerConfig `yaml:"loggerConfig"`
-	zapConfig    LoggerConfig `yaml:"zapConfig"`
+	DBConfig     DBConfig     `yaml:"dbConfig"`
+	APIConfig    APIConfig    `yaml:"apiConfig"`
+	LoggerConfig LoggerConfig `yaml:"loggerConfig"`
+	ZapConfig    LoggerConfig `yaml:"zapConfig"`
 }
 
 // DBConfig for db configuration
